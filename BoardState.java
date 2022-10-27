@@ -1,4 +1,4 @@
-package Project_2;
+package ArtificialIntelligenceProject4;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -10,6 +10,7 @@ public class BoardState {
 
     public int depth = 1;
     
+    //Evaluate the score, if it is a winner for X, return 1, return -1 for a winner for O, else return 0
     public int evaluate() {
         if(isTerminalState()) {
             if(isBoardWinner("X")) {
@@ -24,11 +25,13 @@ public class BoardState {
         return 0;
     }
 
+    //Constructor method
     public BoardState(int size) {
         this.size = size;
         board = new String[size][size];
     }
 
+    //Getter and setters
     public String getTile(int x, int y) {
         return board[x][y];
     }
@@ -37,6 +40,7 @@ public class BoardState {
         board[x][y] = character;
     }
 
+    //Originally we pre-created every single move possible, however it was too inefficient
     public BoardState copyBoard() {
         BoardState copy = new BoardState(size);
         for(int x = 0; x < size; x++) {
@@ -49,6 +53,7 @@ public class BoardState {
         return copy;
     }
 
+    //Check if the game should be over
     public boolean isTerminalState() {
         if(isBoardWinner("X") || isBoardWinner("O")) {
             return true;
@@ -78,31 +83,7 @@ public class BoardState {
         }
     }
 
-    public int getCountBackDiag(String character) {
-        int count = 0;
-
-        //Diagonal top corner
-        for(int i = 0; i < size; i++) {
-            if(board[i][i] != null && board[i][i].equals(character)) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
-    public int getCountForwardDiag(String character) {
-        int count = 0;
-        //Diagonal bottom corner
-        for(int i = 0; i < size; i++) {
-            if(board[i][(size-1) - i] != null && board[i][(size-1) - i].equals(character)) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
+    //Find out if someone is a winner horizontal, vertical, or diagonal
     public boolean isBoardWinner(String character) {
         int count = 0;
 
