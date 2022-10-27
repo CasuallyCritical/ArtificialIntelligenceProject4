@@ -1,7 +1,4 @@
-package Project_2;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+package ArtificialIntelligenceProject4;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -46,18 +43,21 @@ public class TicTacToe {
     int MinimaxSearch(BoardState state, int depth, boolean isMax) {
         int score = state.evaluate();
 
-        if(score == 10) {
+        //We win
+        if(score == 1) {
             return score;
         }
 
-        if(score == -10) {
+        if(score == -1) {
             return score;
         }
 
+        //The game is a tie
         if(state.isTerminalState()) {
             return 0;
         }
 
+        //Check for best move if we're player X
         if(isMax) {
             int best = Integer.MIN_VALUE;
 
@@ -74,7 +74,7 @@ public class TicTacToe {
             }
 
             return best;
-        } else {
+        } else { //We're player O, find the WORST move to leave X in
             int best = Integer.MAX_VALUE;
 
             for(int x = 0; x < state.size; x++) {
@@ -82,6 +82,7 @@ public class TicTacToe {
                     if(state.board[x][y] == null) {
                         state.board[x][y] = "O";
 
+                        //Find the step the next guy would probably be left in
                         best = Math.min(best, MinimaxSearch(state, depth + 1, !isMax));
                     
                         state.board[x][y] = null;
@@ -93,6 +94,7 @@ public class TicTacToe {
         }
     }
 
+    //Handle player input, find where they want to go (or if they want to get a hint)
     public boolean takeTurn(boolean isMax) {
         System.out.println("Current Board State:");
         gameboard.printBoard();
@@ -102,6 +104,7 @@ public class TicTacToe {
         boolean moveMade = false;
         scan.reset();
 
+        //Keep trying until they get it right
         while(!moveMade) {
             System.out.println("What column do you want to play? type HELP for an expert reccomendation");
             String input = scan.nextLine();
@@ -139,7 +142,7 @@ public class TicTacToe {
         }
 
         if(gameboard.board[x][y] == null) {
-            gameboard.setTile(x, y, (gameboard.depth % 2 != 0) ? "X" : "O");
+            gameboard.setTile(x, y, isMax ? "X" : "O");
         } else {
             System.out.println("WARNING: NOT A VALID PLAY");
             return takeTurn(isMax);
@@ -149,6 +152,7 @@ public class TicTacToe {
 
     }
 
+    //Main game logic, do all the things
     public TicTacToe() {
         System.out.println("How big do you want the board to be?");
         scan = new Scanner(System.in);
@@ -159,6 +163,7 @@ public class TicTacToe {
         System.out.println("Which player would you like to be? 1 or 2?");
         int player = scan.nextInt();
 
+        //We want to be player 1, X
         if(player == 1) {
             while(gameboard.isTerminalState() == false) {
                 //System.out.println("Current minmax score: " + MAX_VALUE(gameboard));
@@ -184,15 +189,15 @@ public class TicTacToe {
             } else {
                 System.out.println("There was a Tie!");
             }
-        } else {
+        } else { // we want to be player 2, O
             while(gameboard.isTerminalState() == false) {
             
-    
+                //Find the best solution for this move
                 System.out.println("Finding best move for Computer...");
-                Vector<Integer> solution = findBestMove(gameboard, false);
+                Vector<Integer> solution = findBestMove(gameboard, true);
                 int x = solution.get(0), y = solution.get(1);
 
-                gameboard.setTile(x, y, "O");
+                gameboard.setTile(x, y, "X");
                 
 
 
